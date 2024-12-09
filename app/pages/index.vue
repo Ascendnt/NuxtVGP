@@ -79,8 +79,22 @@
 			<v-chip color="blue">SimpleTable</v-chip>
 			<v-chip color="orange">Data from spaceX graphql</v-chip>
 		</h3>
-		<p>There are {{ ships?.length || 0 }} ships.</p>
-		<v-table>
+		<p>There are {{ launches?.length || 0 }} launches.</p>
+
+		<ul>
+			<li v-for="launch in launches" :key="launch.mission_name">
+				<h2>Mission name: {{ launch.mission_name }}</h2>
+				<p>Launch date: {{ launch.launch_date_utc }}</p>
+				<!-- called launch_site beucase the site_name cannot be read -->
+				<p>Launch Site: {{ launch.launch_site }}</p>
+				<!-- Maybe because all of them are null? -->
+				<!-- <p>Launch Site: {{ launch.launch_site.site_name }}</p>  -->
+				<p>Rocket name: {{ launch.rocket.rocket_name }}</p>
+
+				<p>Details: {{ launch.details }}</p>
+			</li>
+		</ul>
+		<!-- <v-table>
 			<thead>
 				<tr>
 					<th class="text-left">Name</th>
@@ -88,34 +102,45 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="ship in ships" :key="ship.name">
+				<tr v-for="ship in launches" :key="ship.name">
 					<td>{{ ship.name }}</td>
 					<td>
 						<v-chip :color="ship.active ? 'green' : 'red'">{{ ship.active }}</v-chip>
 					</td>
 				</tr>
 			</tbody>
-		</v-table>
+		</v-table> -->
 	</v-container>
 </template>
 <script lang="ts" setup>
+// const foo = useFoo()
 const store = useCounter()
 const selection = ref(0)
 const query = gql`
-	query getShips {
-		ships {
-			id
-			name
-			active
+	query Launch {
+		launches {
+			mission_name
+			launch_date_utc
+			launch_site {
+				site_name
+			}
+			rocket {
+				rocket_name
+			}
+			details
 		}
 	}
 `
 const { data } = useAsyncQuery<{
-	ships: {
-		id: string
-		name: string
-		active: boolean
+	launches: {
+		mission_name: string
+		launch_date_utc: string
+		launch_site: { site_name: string }
+		rocket: { rocket_name: string }
+		details: string | null
 	}[]
 }>(query)
-const ships = computed(() => data.value?.ships ?? [])
+// console.log(data.value?.launches[0]?.launch_site)
+
+const launches = computed(() => data.value?.launches ?? [])
 </script>
