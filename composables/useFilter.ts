@@ -18,19 +18,27 @@ export default function (data) {
     const selectedYear = ref(null);
 
     // Filtered launches based on selected year
-    const filteredYear = computed(() => {
+    const filterYear = computed(() => {
         if (selectedYear.value) {
             return getYear.filter(
-                (launch) => new Date(launch.launch_date_utc).getFullYear() === selectedYear.value,
-            );
+                (launch) =>
+                    new Date(launch.launch_date_utc).getFullYear() === selectedYear.value
+            )
+                .map((launch) => ({
+                    mission: launch.mission_name,
+                    date: launch.launch_date_utc,
+                    launchSite: launch.launch_site?.site_name || 'No details available',
+                    rocketName: launch.rocket?.rocket_name,
+                    details: launch.details || 'No details available',
+                }));
         }
-        return getYear; // If no year is selected, show all launches
+        return getYear;
     });
 
     return {
         years,
         selectedYear,
-        filteredYear
+        filterYear
     };
 }
 
