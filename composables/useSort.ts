@@ -1,4 +1,6 @@
 // It will be available as useSort() (camelCase of file name without extension)
+
+// header for table
 export default function (data) {
     const headers = [
         {
@@ -28,9 +30,9 @@ export default function (data) {
         },
     ];
 
-    const getDate = data.value?.launches;
+    const getDate = data.value?.launches || [];
 
-
+    // showing the details of launch
     const launchDetails =
         getDate.map((launch) => ({
             mission: launch.mission_name,
@@ -40,6 +42,8 @@ export default function (data) {
             details: launch.details || 'No details available',
         })) || [];
 
+
+    // Sorting by date
     const customSort = function (items, index, isDesc) {
         items.sort((a, b) => {
             if (index[0] == 'date') {
@@ -60,17 +64,4 @@ export default function (data) {
 
     };
 
-    // 
-    // const sortBy = [{ key: 'calories', order: 'asc' }];
-
-    // const sortDateAscend = getDate?.sort(
-    //     (a, b) => new Date(a.launch_date_utc).getTime() + new Date(b.launch_date_utc).getTime(),
-    // );
-    // console.log(sortDateAscend);
-
-    // const sortDateDescend = getDate?.sort(
-    //     (a, b) => new Date(b.launch_date_utc).getTime() - new Date(a.launch_date_utc).getTime(),
-    // );
-    // console.log(sortDateDescend);
-    // return useState('foo', () => 'bar');
 }
